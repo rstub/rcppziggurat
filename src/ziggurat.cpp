@@ -49,6 +49,14 @@ Rcpp::NumericVector zrnormMT(int n) {
     return x;
 }
 // [[Rcpp::export]]
+Rcpp::NumericVector zrexpMT(int n) {
+    Rcpp::NumericVector x(n);
+    for (int i=0; i<n; i++) {
+        x[i] = ziggmt.rexp();
+    }
+    return x;
+}
+// [[Rcpp::export]]
 void zsetseedMT(int s) {
     ziggmt.setSeed(s);
 }

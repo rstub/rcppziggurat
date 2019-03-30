@@ -5,6 +5,10 @@ zrnormMT <- function(n) {
     .Call(`_RcppZiggurat_zrnormMT`, n)
 }
 
+zrexpMT <- function(n) {
+    .Call(`_RcppZiggurat_zrexpMT`, n)
+}
+
 zsetseedMT <- function(s) {
     invisible(.Call(`_RcppZiggurat_zsetseedMT`, s))
 }

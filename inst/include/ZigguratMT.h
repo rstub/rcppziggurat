@@ -29,7 +29,6 @@
 // a) by reorganising it as a C++ class,
 // b) by switching from use of (unsigned) long variable (which implied 32 bit
 //    at the time) to use of (u)int32_t from the stdint.h header file
-// c) removing the exponential generator
 //
 // Per the article of Leong, Zhang et al (see file ZigguratLZLLV.h here), this
 // original Marsaglia and Tsang article should NOT be used as originally published.
@@ -66,14 +65,14 @@ namespace MT {
 #define IUNI SHR3
 
 #define RNOR (hz=SHR3, iz=hz&127, (abs(hz)<kn[iz])? hz*wn[iz] : nfix())
-//#define REXP (jz=SHR3, iz=jz&255, (    jz <ke[iz])? jz*we[iz] : efix())
+#define REXP (jz=SHR3, iz=jz&255, (    jz <ke[iz])? jz*we[iz] : efix())
 
     class ZigguratMT : public Zigg {
     private:
         uint32_t jz, jsr;
         int32_t hz;
-        uint32_t iz, kn[128]; /*, ke[256];*/
-        double wn[128],fn[128]; /*, we[256],fe[256];*/
+        uint32_t iz, kn[128], ke[256];
+        double wn[128],fn[128], we[256],fe[256];
 
     public: 
         ZigguratMT(uint32_t seed=123456789) : jsr(123456789) {
@@ -82,6 +81,10 @@ namespace MT {
         }
         inline double norm(void) { 
             return RNOR; 
+        }
+
+        inline double rexp(void) {
+            return REXP;
         }
 
         void setSeed(uint32_t jsrseed) {
@@ -97,9 +100,9 @@ namespace MT {
     private:
         // setup internal tables
         void setup(void) {
-            const double m1 = 2147483648.0; /*, m2 = 4294967296.;*/
+            const double m1 = 2147483648.0, m2 = 4294967296.;
             double dn=3.442619855899,tn=dn,vn=9.91256303526217e-3, q;
-            //double de=7.697117470131487, te=de, ve=3.949659822581572e-3;
+            double de=7.697117470131487, te=de, ve=3.949659822581572e-3;
             int i;
 
             /* Set up tables for RNOR */
@@ -119,6 +122,25 @@ namespace MT {
                 tn=dn;
                 fn[i]=exp(-.5*dn*dn);
                 wn[i]=dn/m1;
+            }
+
+            /* Set up tables for REXP */
+            q = ve/exp(-de);
+            ke[0]=(de/q)*m2;
+            ke[1]=0;
+
+            we[0]=q/m2;
+            we[255]=de/m2;
+
+            fe[0]=1.;
+            fe[255]=exp(-de);
+
+            for (i=254;i>=1;i--) {
+                de=-log(ve/de+exp(-de));
+                ke[i+1]= (de/te)*m2;
+                te=de;
+                fe[i]=exp(-de);
+                we[i]=de/m2;
             }
         }
 
@@ -142,12 +164,28 @@ namespace MT {
                 if(abs(hz)<kn[iz]) return (hz*wn[iz]);
             }
         }
+
+        // efix() generates variates from the residue when rejection in REXP occurs.
+        inline double efix(void) {
+            double x;
+            for(;;) {
+                if(iz==0) return (7.69711-log(UNI));          /* iz==0 */
+                x=jz*we[iz];
+                if( fe[iz]+UNI*(fe[iz-1]-fe[iz]) < exp(-x) ) return (x);
+
+                /* initiate, try to exit for(;;) loop */
+                jz=SHR3;
+                iz=(jz&255);
+                if(jz<ke[iz]) return (jz*we[iz]);
+            }
+        }
     };
 
 #undef SHR3 
 #undef UNI 
 #undef IUNI 
 #undef RNOR 
+#undef REXP
 }
 }
 

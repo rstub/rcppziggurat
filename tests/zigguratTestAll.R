@@ -8,6 +8,7 @@ print(zrnorm(10), digits=12)
 cat("MT\n")
 zsetseedMT(123456890)
 print(zrnormMT(10), digits=12)
+print(zrexpMT(10), digits=12)
 
 cat("LZLLV\n")
 zsetseedLZLLV(123456890)

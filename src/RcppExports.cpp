@@ -17,6 +17,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// zrexpMT
+Rcpp::NumericVector zrexpMT(int n);
+RcppExport SEXP _RcppZiggurat_zrexpMT(SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(zrexpMT(n));
+    return rcpp_result_gen;
+END_RCPP
+}
 // zsetseedMT
 void zsetseedMT(int s);
 RcppExport SEXP _RcppZiggurat_zsetseedMT(SEXP sSEXP) {
@@ -306,6 +317,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_RcppZiggurat_zrnormMT", (DL_FUNC) &_RcppZiggurat_zrnormMT, 1},
+    {"_RcppZiggurat_zrexpMT", (DL_FUNC) &_RcppZiggurat_zrexpMT, 1},
     {"_RcppZiggurat_zsetseedMT", (DL_FUNC) &_RcppZiggurat_zsetseedMT, 1},
     {"_RcppZiggurat_zrnormLZLLV", (DL_FUNC) &_RcppZiggurat_zrnormLZLLV, 1},
     {"_RcppZiggurat_zsetseedLZLLV", (DL_FUNC) &_RcppZiggurat_zsetseedLZLLV, 1},

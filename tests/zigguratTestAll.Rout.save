@@ -1,11 +1,13 @@
 
-R version 3.1.0 (2014-04-10) -- "Spring Dance"
-Copyright (C) 2014 The R Foundation for Statistical Computing
-Platform: x86_64-pc-linux-gnu (64-bit)
+R version 3.5.2 (2018-12-20) -- "Eggshell Igloo"
+Copyright (C) 2018 The R Foundation for Statistical Computing
+Platform: i686-pc-linux-gnu (32-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -33,6 +35,10 @@ MT
  [1]  0.0188738179215 -0.6381595677902 -2.4014380546905  0.4090516442993
  [5]  0.3330368951602  0.6023299279460  0.6449064649155 -0.2741292982499
  [9]  0.6804153809252  0.7170403875774
+> print(zrexpMT(10), digits=12)
+ [1] 0.2562976688661 0.4099890428918 0.5292889261149 0.3491325302397
+ [5] 0.0619396203057 0.0981441084071 1.0924418025866 0.1623071888060
+ [9] 1.9701780365308 0.8057066436382
 > 
 > cat("LZLLV\n")
 LZLLV

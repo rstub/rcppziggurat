@@ -2,6 +2,7 @@
 \alias{zrnorm}
 \alias{zrnormLZLLV}
 \alias{zrnormMT}
+\alias{zrexpMT}
 \alias{zrnormV1}
 \alias{zrnormV1b}
 \alias{zrnormStl}
@@ -27,12 +28,13 @@
 \alias{ziggbin}
 \alias{ziggsum}
 \alias{ziggtest}
-\title{Collection of Ziggurat Normal RNGs}
+\title{Collection of Ziggurat Normal and Exponential RNGs}
 \description{
   This package regroups and provides a nummber of implementations of the
   Ziggurat generator for drawing (standard) normally distributed random
-  numbers. Ziggurat was introduced by Marsaglia and Tsang (JSS, 2000)
-  and improved by Leong, Zhang, et al (JSS, 2005).
+  numbers. For some implementations drawing exponentially distributed
+  random numbers is also supported. Ziggurat was introduced by Marsaglia
+  and Tsang (JSS, 2000) and improved by Leong, Zhang, et al (JSS, 2005).
 }
 \usage{
   zrnorm(n)
@@ -45,6 +47,7 @@
   zrnormQL(n)
   zrnormGl(n)
   zrnormR(n)
+  zrexpMT(n)
   zsetseed(s)
   zsetseedV1(s)
   zsetseedLZLLV(s)
@@ -65,6 +68,9 @@
 }
 \value{
   The \code{zrnorm*} functions all return a vector of the requested
+  size.
+
+  The \code{zrexp*} functions all return a vector of the requested
   size.
 
   The \code{zsetseed*} functions do not return a value, but set the seed
