@@ -40,7 +40,6 @@
 //
 // The code by Burkardt was modified by
 // a) reorganising it as a C++ class,
-// b) removing the exponential generator
 //
 // This file represent the Leong, Zhang et al improvement over the
 // original Marsaglia and Tsang article and can be recommended for use.
@@ -67,6 +66,7 @@ namespace Ziggurat {
 #define UNI  (0.5 + (int32_t) KISS * 0.2328306e-09)
 #define IUNI KISS
 #define RNOR (hz = KISS, iz = hz & 127, ( abs ( hz ) < kn[iz] ) ? hz * wn[iz] : nfix())
+#define REXP (jz = KISS, iz = jz & 255, (       jz   < ke[iz] ) ? jz * we[iz] : efix())
 
     class Ziggurat : public Zigg {
     public:
@@ -91,6 +91,9 @@ namespace Ziggurat {
         inline double norm() {
             return RNOR;
         }
+        inline double rexp() {
+            return REXP;
+        }
         std::vector<uint32_t> getPars() {
             //C++11: std::vector<uint32_t> pars{ jsr, z, w, jcong };
             std::vector<uint32_t> pars;
@@ -108,23 +111,30 @@ namespace Ziggurat {
         }
         
     private:
+        double fe[256];
         double fn[128];
         int32_t hz;
         uint32_t iz;
         uint32_t jcong;
         uint32_t jsr;
         uint32_t jz;
+        uint32_t ke[256];
         uint32_t kn[128];
         uint32_t w;
+        double we[256];
         double wn[128];
         uint32_t z;
 
         void init() {               // called from ctor, could be in ctor
+            double de = 7.697117470131487;
             double dn = 3.442619855899;
             int i;
             const double m1 = 2147483648.0;
+            const double m2 = 4294967296.0;
             double q;
+            double te = 7.697117470131487;
             double tn = 3.442619855899;
+            const double ve = 3.949659822581572e-03;
             const double vn = 9.91256303526217E-03;
 
             //  Set up the tables for the normal random number generator.
@@ -144,6 +154,25 @@ namespace Ziggurat {
                 tn = dn;
                 fn[i] = (double) (exp( - 0.5 * dn * dn));
                 wn[i] = (double) (dn / m1);
+            }
+
+            //  Set up the tables for the exponential random number generator.
+            q = ve / exp ( - de );
+            ke[0] = (uint32_t) ( ( de / q ) * m2 );
+            ke[1] = 0;
+
+            we[0] = (double) ( q / m2 );
+            we[255] = (double) ( de / m2 );
+
+            fe[0] = 1.0;
+            fe[255] = (double) ( exp ( - de ) );
+
+            for ( i = 254; 1 <= i; i-- ) {
+                de = - log ( ve / de + exp ( - de ) );
+                ke[i+1] = (uint32_t) ( ( de / te ) * m2 );
+                te = de;
+                fe[i] = (double) ( exp ( - de ) );
+                we[i] = (double) ( de / m2 );
             }
             return;
         }
@@ -177,6 +206,28 @@ namespace Ziggurat {
                 }
             }
         }
+
+        inline double efix(void) {
+            double x;
+
+            for (;;) {
+                // IZ = 0.
+                if ( iz == 0 ) {
+                    return ( 7.69711 - log ( UNI ) );
+                }
+
+                x = jz * we[iz];
+                if ( fe[iz] + UNI * ( fe[iz-1] - fe[iz] ) < exp ( - x ) ) {
+                    return x;
+                }
+                // Initiate, try to exit the loop.
+                jz = KISS;
+                iz = ( jz & 255 );
+                if ( jz < ke[iz] ) {
+                    return ( (double) ( jz * we[iz] ) );
+                }
+            }
+        }
     };
 
 #undef znew
@@ -189,6 +240,7 @@ namespace Ziggurat {
 #undef UNI
 #undef IUNI
 #undef RNOR
+#undef REXP
 
 }
 }

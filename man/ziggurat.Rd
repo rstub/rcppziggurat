@@ -1,5 +1,6 @@
 \name{zrnorm}
 \alias{zrnorm}
+\alias{zrexp}
 \alias{zrnormLZLLV}
 \alias{zrnormMT}
 \alias{zrexpMT}
@@ -47,6 +48,7 @@
   zrnormQL(n)
   zrnormGl(n)
   zrnormR(n)
+  zrexp(n)
   zrexpMT(n)
   zsetseed(s)
   zsetseedV1(s)

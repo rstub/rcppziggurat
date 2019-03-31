@@ -4,6 +4,7 @@ library(RcppZiggurat)
 cat("Default\n")
 zsetseed(123456890)
 print(zrnorm(10), digits=12)
+print(zrexp(10), digits=12)
 
 cat("MT\n")
 zsetseedMT(123456890)
